@@ -1,0 +1,424 @@
+Process:
+	P_VISITOR_RULE_B
+States:
+	2
+Transitions:
+	P_VISITOR_RULE_B = Q0,
+	Q0	= ({allow_B, unLock_B} -> Q0
+		  |lock_B -> Q1),
+	Q1	= (allow_B -> ERROR
+		  |unLock_B -> Q0
+		  |lock_B -> Q1)
+
+Process:
+	P_LOCK_RULE_D1
+States:
+	3
+Transitions:
+	P_LOCK_RULE_D1 = Q0,
+	Q0	= ({resRoomStatus, unLock_D} -> Q0
+		  |lock_D -> Q1
+		  |arrive_D[2] -> Q2),
+	Q1	= (unLock_D -> Q0
+		  |{arrive_D[2], {lock_D, resRoomStatus}} -> Q1),
+	Q2	= (resRoomStatus -> ERROR
+		  |lock_D -> Q1
+		  |{arrive_D[2], unLock_D} -> Q2)
+
+Process:
+	P_LOCK_RULE_D2
+States:
+	4
+Transitions:
+	P_LOCK_RULE_D2 = Q0,
+	Q0	= ({allow_Out, unLock_D} -> Q0
+		  |arrive_D[2] -> Q1
+		  |lock_D -> Q2),
+	Q1	= (allow_Out -> Q0
+		  |{arrive_D[2], unLock_D} -> Q1
+		  |lock_D -> Q3),
+	Q2	= (allow_Out -> Q0
+		  |{lock_D, unLock_D} -> Q2
+		  |arrive_D[2] -> Q3),
+	Q3	= (unLock_D -> ERROR
+		  |allow_Out -> Q0
+		  |{arrive_D[2], lock_D} -> Q3)
+
+Process:
+	P_UNLOCK_RULE_D1
+States:
+	3
+Transitions:
+	P_UNLOCK_RULE_D1 = Q0,
+	Q0	= ({allow_Out, resRoomStatus, unLock_D} -> Q0
+		  |lock_D -> Q1),
+	Q1	= (unLock_D -> Q0
+		  |{lock_D, resRoomStatus} -> Q1
+		  |allow_Out -> Q2),
+	Q2	= (resRoomStatus -> ERROR
+		  |unLock_D -> Q0
+		  |{allow_Out, lock_D} -> Q2)
+
+Process:
+	P_VISITOR_RULE_A
+States:
+	2
+Transitions:
+	P_VISITOR_RULE_A = Q0,
+	Q0	= ({allow_A, unLock_A} -> Q0
+		  |lock_A -> Q1),
+	Q1	= (allow_A -> ERROR
+		  |unLock_A -> Q0
+		  |lock_A -> Q1)
+
+Process:
+	P_LOCK_RULE_C1
+States:
+	3
+Transitions:
+	P_LOCK_RULE_C1 = Q0,
+	Q0	= ({resRoomStatus, unLock_C} -> Q0
+		  |lock_C -> Q1
+		  |arrive_C[2] -> Q2),
+	Q1	= (unLock_C -> Q0
+		  |{arrive_C[2], {lock_C, resRoomStatus}} -> Q1),
+	Q2	= (resRoomStatus -> ERROR
+		  |lock_C -> Q1
+		  |{arrive_C[2], unLock_C} -> Q2)
+
+Process:
+	P_LOCK_RULE_C2
+States:
+	4
+Transitions:
+	P_LOCK_RULE_C2 = Q0,
+	Q0	= ({allow_D, unLock_C} -> Q0
+		  |arrive_C[2] -> Q1
+		  |lock_C -> Q2),
+	Q1	= (allow_D -> Q0
+		  |{arrive_C[2], unLock_C} -> Q1
+		  |lock_C -> Q3),
+	Q2	= (allow_D -> Q0
+		  |{lock_C, unLock_C} -> Q2
+		  |arrive_C[2] -> Q3),
+	Q3	= (unLock_C -> ERROR
+		  |allow_D -> Q0
+		  |{arrive_C[2], lock_C} -> Q3)		  
+
+Process:
+	P_B_UNLOCK_TIMING
+States:
+	2
+Transitions:
+	P_B_UNLOCK_TIMING = Q0,
+	Q0	= (unLock_B -> ERROR
+		  |resRoomStatus -> Q0
+		  |{{arrive_A, arrive_B, arrive_C, arrive_D, arrive_Hall}[1..4], {leave, notEnter}} -> Q1),
+	Q1	= (resRoomStatus -> Q0
+		  |{{arrive_A, arrive_B, arrive_C, arrive_D, arrive_Hall}[1..4], {leave, notEnter, unLock_B}} -> Q1)		  
+
+Process:
+	P_LOCK_RULE_HALL1
+States:
+	3
+Transitions:
+	P_LOCK_RULE_HALL1 = Q0,
+	Q0	= ({resRoomStatus, unLock_Hall} -> Q0
+		  |lock_Hall -> Q1
+		  |arrive_Hall[2] -> Q2),
+	Q1	= (unLock_Hall -> Q0
+		  |{arrive_Hall[2], {lock_Hall, resRoomStatus}} -> Q1),
+	Q2	= (resRoomStatus -> ERROR
+		  |lock_Hall -> Q1
+		  |{arrive_Hall[2], unLock_Hall} -> Q2)
+
+Process:
+	P_C_UNLOCK_TIMING
+States:
+	2
+Transitions:
+	P_C_UNLOCK_TIMING = Q0,
+	Q0	= (unLock_C -> ERROR
+		  |resRoomStatus -> Q0
+		  |{{arrive_A, arrive_B, arrive_C, arrive_D, arrive_Hall}[1..4], {leave, notEnter}} -> Q1),
+	Q1	= (resRoomStatus -> Q0
+		  |{{arrive_A, arrive_B, arrive_C, arrive_D, arrive_Hall}[1..4], {leave, notEnter, unLock_C}} -> Q1)		  
+
+Process:
+	P_A_UNLOCK_TIMING
+States:
+	2
+Transitions:
+	P_A_UNLOCK_TIMING = Q0,
+	Q0	= (unLock_A -> ERROR
+		  |resRoomStatus -> Q0
+		  |{{arrive_A, arrive_B, arrive_C, arrive_D, arrive_Hall}[1..4], {leave, notEnter}} -> Q1),
+	Q1	= (resRoomStatus -> Q0
+		  |{{arrive_A, arrive_B, arrive_C, arrive_D, arrive_Hall}[1..4], {leave, notEnter, unLock_A}} -> Q1)		  
+
+Process:
+	P_VISITOR_RULE_HALL
+States:
+	2
+Transitions:
+	P_VISITOR_RULE_HALL = Q0,
+	Q0	= ({allow_Hall, unLock_Hall} -> Q0
+		  |lock_Hall -> Q1),
+	Q1	= (allow_Hall -> ERROR
+		  |unLock_Hall -> Q0
+		  |lock_Hall -> Q1)		  
+
+Process:
+	P_C_LOCK_TIMING
+States:
+	2
+Transitions:
+	P_C_LOCK_TIMING = Q0,
+	Q0	= (lock_C -> ERROR
+		  |resRoomStatus -> Q0
+		  |arrive_C[2] -> Q1),
+	Q1	= (resRoomStatus -> Q0
+		  |{arrive_C[2], lock_C} -> Q1)
+
+Process:
+	P_D_UNLOCK_TIMING
+States:
+	2
+Transitions:
+	P_D_UNLOCK_TIMING = Q0,
+	Q0	= (unLock_D -> ERROR
+		  |resRoomStatus -> Q0
+		  |{{arrive_A, arrive_B, arrive_C, arrive_D, arrive_Hall}[1..4], {leave, notEnter}} -> Q1),
+	Q1	= (resRoomStatus -> Q0
+		  |{{arrive_A, arrive_B, arrive_C, arrive_D, arrive_Hall}[1..4], {leave, notEnter, unLock_D}} -> Q1)		  
+
+Process:
+	P_B_LOCK_TIMING
+States:
+	2
+Transitions:
+	P_B_LOCK_TIMING = Q0,
+	Q0	= (lock_B -> ERROR
+		  |resRoomStatus -> Q0
+		  |arrive_B[2] -> Q1),
+	Q1	= (resRoomStatus -> Q0
+		  |{arrive_B[2], lock_B} -> Q1)
+
+Process:
+	P_LOCK_RULE_A1
+States:
+	3
+Transitions:
+	P_LOCK_RULE_A1 = Q0,
+	Q0	= ({resRoomStatus, unLock_A} -> Q0
+		  |lock_A -> Q1
+		  |arrive_A[2] -> Q2),
+	Q1	= (unLock_A -> Q0
+		  |{arrive_A[2], {lock_A, resRoomStatus}} -> Q1),
+	Q2	= (resRoomStatus -> ERROR
+		  |lock_A -> Q1
+		  |{arrive_A[2], unLock_A} -> Q2)		  
+
+Process:
+	P_VISITOR_RULE_C
+States:
+	2
+Transitions:
+	P_VISITOR_RULE_C = Q0,
+	Q0	= ({allow_C, unLock_C} -> Q0
+		  |lock_C -> Q1),
+	Q1	= (allow_C -> ERROR
+		  |unLock_C -> Q0
+		  |lock_C -> Q1)		  
+
+Process:
+	P_UNLOCK_RULE_A1
+States:
+	3
+Transitions:
+	P_UNLOCK_RULE_A1 = Q0,
+	Q0	= ({allow_B, resRoomStatus, unLock_A} -> Q0
+		  |lock_A -> Q1),
+	Q1	= (unLock_A -> Q0
+		  |{lock_A, resRoomStatus} -> Q1
+		  |allow_B -> Q2),
+	Q2	= (resRoomStatus -> ERROR
+		  |unLock_A -> Q0
+		  |{allow_B, lock_A} -> Q2)		  
+
+Process:
+	P_HALL_LOCK_TIMING
+States:
+	2
+Transitions:
+	P_HALL_LOCK_TIMING = Q0,
+	Q0	= (lock_Hall -> ERROR
+		  |resRoomStatus -> Q0
+		  |arrive_Hall[2] -> Q1),
+	Q1	= (resRoomStatus -> Q0
+		  |{arrive_Hall[2], lock_Hall} -> Q1)		  
+
+Process:
+	P_UNLOCK_RULE_C1
+States:
+	3
+Transitions:
+	P_UNLOCK_RULE_C1 = Q0,
+	Q0	= ({allow_D, resRoomStatus, unLock_C} -> Q0
+		  |lock_C -> Q1),
+	Q1	= (unLock_C -> Q0
+		  |{lock_C, resRoomStatus} -> Q1
+		  |allow_D -> Q2),
+	Q2	= (resRoomStatus -> ERROR
+		  |unLock_C -> Q0
+		  |{allow_D, lock_C} -> Q2)
+
+Process:
+	P_VISITOR_RULE_D
+States:
+	2
+Transitions:
+	P_VISITOR_RULE_D = Q0,
+	Q0	= ({allow_D, unLock_D} -> Q0
+		  |lock_D -> Q1),
+	Q1	= (allow_D -> ERROR
+		  |unLock_D -> Q0
+		  |lock_D -> Q1)	  
+
+Process:
+	P_LOCK_RULE_B2
+States:
+	4
+Transitions:
+	P_LOCK_RULE_B2 = Q0,
+	Q0	= ({allow_C, unLock_B} -> Q0
+		  |arrive_B[2] -> Q1
+		  |lock_B -> Q2),
+	Q1	= (allow_C -> Q0
+		  |{arrive_B[2], unLock_B} -> Q1
+		  |lock_B -> Q3),
+	Q2	= (allow_C -> Q0
+		  |{lock_B, unLock_B} -> Q2
+		  |arrive_B[2] -> Q3),
+	Q3	= (unLock_B -> ERROR
+		  |allow_C -> Q0
+		  |{arrive_B[2], lock_B} -> Q3)		  
+
+Process:
+	P_D_LOCK_TIMING
+States:
+	2
+Transitions:
+	P_D_LOCK_TIMING = Q0,
+	Q0	= (lock_D -> ERROR
+		  |resRoomStatus -> Q0
+		  |arrive_D[2] -> Q1),
+	Q1	= (resRoomStatus -> Q0
+		  |{arrive_D[2], lock_D} -> Q1)		  
+
+Process:
+	P_LOCK_RULE_HALL2
+States:
+	4
+Transitions:
+	P_LOCK_RULE_HALL2 = Q0,
+	Q0	= ({allow_A, unLock_Hall} -> Q0
+		  |arrive_Hall[2] -> Q1
+		  |lock_Hall -> Q2),
+	Q1	= (allow_A -> Q0
+		  |{arrive_Hall[2], unLock_Hall} -> Q1
+		  |lock_Hall -> Q3),
+	Q2	= (allow_A -> Q0
+		  |{lock_Hall, unLock_Hall} -> Q2
+		  |arrive_Hall[2] -> Q3),
+	Q3	= (unLock_Hall -> ERROR
+		  |allow_A -> Q0
+		  |{arrive_Hall[2], lock_Hall} -> Q3)		  
+
+Process:
+	P_LOCK_RULE_A2
+States:
+	4
+Transitions:
+	P_LOCK_RULE_A2 = Q0,
+	Q0	= ({allow_B, unLock_A} -> Q0
+		  |arrive_A[2] -> Q1
+		  |lock_A -> Q2),
+	Q1	= (allow_B -> Q0
+		  |{arrive_A[2], unLock_A} -> Q1
+		  |lock_A -> Q3),
+	Q2	= (allow_B -> Q0
+		  |{lock_A, unLock_A} -> Q2
+		  |arrive_A[2] -> Q3),
+	Q3	= (unLock_A -> ERROR
+		  |allow_B -> Q0
+		  |{arrive_A[2], lock_A} -> Q3)		  
+
+Process:
+	P_A_LOCK_TIMING
+States:
+	2
+Transitions:
+	P_A_LOCK_TIMING = Q0,
+	Q0	= (lock_A -> ERROR
+		  |resRoomStatus -> Q0
+		  |arrive_A[2] -> Q1),
+	Q1	= (resRoomStatus -> Q0
+		  |{arrive_A[2], lock_A} -> Q1)		  
+
+Process:
+	P_HALL_UNLOCK_TIMING
+States:
+	2
+Transitions:
+	P_HALL_UNLOCK_TIMING = Q0,
+	Q0	= (unLock_Hall -> ERROR
+		  |resRoomStatus -> Q0
+		  |{{arrive_A, arrive_B, arrive_C, arrive_D, arrive_Hall}[1..4], {leave, notEnter}} -> Q1),
+	Q1	= (resRoomStatus -> Q0
+		  |{{arrive_A, arrive_B, arrive_C, arrive_D, arrive_Hall}[1..4], {leave, notEnter, unLock_Hall}} -> Q1)		  
+
+Process:
+	P_UNLOCK_RULE_HALL1
+States:
+	3
+Transitions:
+	P_UNLOCK_RULE_HALL1 = Q0,
+	Q0	= ({allow_A, resRoomStatus, unLock_Hall} -> Q0
+		  |lock_Hall -> Q1),
+	Q1	= (unLock_Hall -> Q0
+		  |{lock_Hall, resRoomStatus} -> Q1
+		  |allow_A -> Q2),
+	Q2	= (resRoomStatus -> ERROR
+		  |unLock_Hall -> Q0
+		  |{allow_A, lock_Hall} -> Q2)		  
+
+Process:
+	P_UNLOCK_RULE_B1
+States:
+	3
+Transitions:
+	P_UNLOCK_RULE_B1 = Q0,
+	Q0	= ({allow_C, resRoomStatus, unLock_B} -> Q0
+		  |lock_B -> Q1),
+	Q1	= (unLock_B -> Q0
+		  |{lock_B, resRoomStatus} -> Q1
+		  |allow_C -> Q2),
+	Q2	= (resRoomStatus -> ERROR
+		  |unLock_B -> Q0
+		  |{allow_C, lock_B} -> Q2)		  
+
+Process:
+	P_LOCK_RULE_B1
+States:
+	3
+Transitions:
+	P_LOCK_RULE_B1 = Q0,
+	Q0	= ({resRoomStatus, unLock_B} -> Q0
+		  |lock_B -> Q1
+		  |arrive_B[2] -> Q2),
+	Q1	= (unLock_B -> Q0
+		  |{arrive_B[2], {lock_B, resRoomStatus}} -> Q1),
+	Q2	= (resRoomStatus -> ERROR
+		  |lock_B -> Q1
+		  |{arrive_B[2], unLock_B} -> Q2)

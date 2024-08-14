@@ -1,0 +1,68 @@
+[
+	{
+		"Environment": "VISITOR",
+		"Action": [
+			"reqEnter_Hall","reqEnter_A","reqEnter_B","reqEnter_C","reqEnter_D","reqOut","resRoomStatus","allow_Hall","allow_A","allow_B","allow_C","allow_D","allow_Out","deny_Hall","deny_A","deny_B","deny_C","deny_D","deny_Out","notEnter","arrive_Hall[1]","arrive_Hall[2]","arrive_Hall[3]","arrive_Hall[4]","arrive_A[1]","arrive_A[2]","arrive_A[3]","arrive_A[4]","arrive_B[1]","arrive_B[2]","arrive_B[3]","arrive_B[4]","arrive_C[1]","arrive_C[2]","arrive_C[3]","arrive_C[4]","arrive_D[1]","arrive_D[2]","arrive_D[3]","arrive_D[4]","leave"
+		]
+	},
+	{
+		"Environment": "HALL",
+		"Action": [
+			"allow_Hall","arrive_Hall[1]","arrive_Hall[2]","arrive_Hall[3]","arrive_Hall[4]","deny_A","reqEnter_A"
+		]
+	},
+	{
+		"Environment": "ROOM_A",
+		"Action": [
+			"allow_A","arrive_A[1]","arrive_A[2]","arrive_A[3]","arrive_A[4]","deny_B","reqEnter_B"
+		]
+	},
+	{
+		"Environment": "ROOM_B",
+		"Action": [
+			"allow_B","arrive_B[1]","arrive_B[2]","arrive_B[3]","arrive_B[4]","deny_C","reqEnter_C"
+		]
+	},
+	{
+		"Environment": "ROOM_C",
+		"Action": [
+			"allow_C","arrive_C[1]","arrive_C[2]","arrive_C[3]","arrive_C[4]","deny_D","reqEnter_D"
+		]
+	},
+	{
+		"Environment": "ROOM_D",
+		"Action": [
+			"allow_D","arrive_D[1]","arrive_D[2]","arrive_D[3]","arrive_D[4]","deny_Out","reqOut"
+		]
+	},
+	{
+		"Environment": "DOOR_LOCK_HALL",
+		"Action": [
+			"lock_Hall","unLock_Hall"
+		]
+	},
+	{
+		"Environment": "DOOR_LOCK_A",
+		"Action": [
+			"lock_A","unLock_A"
+		]
+	},
+	{
+		"Environment": "DOOR_LOCK_B",
+		"Action": [
+			"lock_B","unLock_B"
+		]
+	},
+	{
+		"Environment": "DOOR_LOCK_C",
+		"Action": [
+			"lock_C","unLock_C"
+		]
+	},
+	{
+		"Environment": "DOOR_LOCK_D",
+		"Action": [
+			"lock_D","unLock_D"
+		]
+	}
+]
