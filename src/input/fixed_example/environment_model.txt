@@ -1,0 +1,38 @@
+//*****************************************************************************
+// Environment
+//*****************************************************************************
+
+/* set variable */
+const MaxHeight = 20 
+const MaxX = 10
+const MaxY = 10
+
+range Height = 1..MaxHeight
+range X = 1..MaxX
+range Y = 1..MaxY
+
+/* set Actions  */
+set ControllerbleActions = {battery['low], battery['safe], stop_rec, takeoff, land, up[2..MaxHeight], down[1..MaxHeight-1], move[X][Y]}
+
+
+/* Drone Model */
+
+//電池残量管理
+BATTERY = SAFE,
+SAFE = (battery['low] -> LOW),
+LOW  = (battery['safe] -> SAFE).
+
+//managing movement
+ALTITUDE  = (takeoff -> ACTION[1]),
+ACTION[h:Height] = (when(h == 1) land-> ALTITUDE
+                   |when(h > 1) down[h-1] -> ACTION[h-1]
+				   |when(h < MaxHeight) up[h+1] -> ACTION[h+1]).
+
+AREA      = (takeoff -> ACTION[1][1]),
+ACTION[x:X][y:Y] = (land-> AREA
+　　　　　　　　　　　|when(x > 1) move[x-1][y] -> ACTION[x-1][y]
+				   |when(x < MaxX) move[x+1][y] -> ACTION[x+1][y]
+				   |when(y > 1) move[x][y-1] -> ACTION[x][y-1]
+				   |when(y < MaxY) move[x][y+1] -> ACTION[x][y+1]).
+
+|| DroneEnvironment = (BATTERY || ALTITUDE || AREA).

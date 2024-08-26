@@ -1,0 +1,7 @@
+[
+    {"Requirement": "P_DO_NOT_UP", "Environment": [ALTITUDE]},
+    {"Requirement": "P_DO_NOT_MOVE_X", "Environment": [AREA]},
+    {"Requirement": "P_DO_NOT_MOVE_Y", "Environment": [AREA]},
+    {"Requirement": "P_LOW_BATTERY", "Environment": [BATTERY, ALTITUDE]},
+    {"Requirement": "P_LOW_BATTERY_SUB", "Environment": [BATTERY, ALTITUDE]}
+]

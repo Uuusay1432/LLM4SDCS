@@ -1,0 +1,7 @@
+[
+    {"Requirement": "P_DO_NOT_UP", "Action": [up.18]},
+    {"Requirement": "P_DO_NOT_MOVE_X", "Action": [move.5.6, move.5.7, move.5.8, move.5.9, move.5.2, move.5.3, move.5.4, move.5.10, move.5.5, move.5.1]},
+    {"Requirement": "P_DO_NOT_MOVE_Y", "Action": [move.6.5, move.7.5, move.8.5, move.9.5, move.2.5, move.3.5, move.4.5, move.5.5, move.10.5, move.1.5]},
+    {"Requirement": "P_LOW_BATTERY", "Action": [battery.safe, up.9, up.12, up.13, up.7, up.14, up.8, up.15, up.5, up.6, up.20, up.3, up.10, up.4, up.11, battery.low, up.16, up.17, up.18, up.19]},
+    {"Requirement": "P_LOW_BATTERY_SUB", "Action": [up.15, up.20, battery.safe, battery.low, up.16, up.17, up.18, up.19]}
+]

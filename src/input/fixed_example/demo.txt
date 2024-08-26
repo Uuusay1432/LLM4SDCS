@@ -1,0 +1,228 @@
+{
+"Demonstration Environment model":
+
+//*****************************************************************************
+// Environment
+//*****************************************************************************
+
+const N = 4
+
+set VisitorAction = {reqEnter_Hall,reqEnter_A,reqOut}
+set LockAction    = {lock_Hall,lock_A,unLock_Hall,unLock_A}
+set AllowAction   = {allow_Hall,allow_A,deny_Out}
+set DoorAction    = {LockAction,AllowAction,resRoomStatus}
+set MonitorAction = {notEnter,arrive_Hall[1..N],arrive_A[1..N],leave}
+set AllAction     = {VisitorAction,DoorAction,MonitorAction}
+set ControllableActions = {DoorAction}
+
+VISITOR = VISIT,
+VISIT =
+(
+	reqEnter_Hall  -> resRoomStatus -> CHECK_HALL
+    |reqEnter_A    -> resRoomStatus -> CHECK_A
+    |reqOut        -> resRoomStatus -> CHECK_OUT
+),
+CHECK_HALL = (allow_Hall -> arrive_Hall[1..N] -> VISIT | deny_Hall -> notEnter -> VISIT),
+CHECK_A    = (allow_A    -> arrive_A[1..N]    -> VISIT | deny_A    -> arrive_Hall[1..N] -> VISIT),
+CHECK_OUT  = (allow_Out  -> leave             -> VISIT | deny_Out  -> arrive_A[1..N] -> VISIT).
+
+
+HALL = HALL[0],
+HALL[n:0..N]   = (when(n!=N) allow_Hall -> arrive_Hall[n+1] -> HALL[n+1]   |when(n!=N) deny_A -> arrive_Hall[n+1] -> HALL[n+1]  |when(n!=0) reqEnter_A -> HALL[n-1]).
+ROOM_A = ROOM_A[0],
+ROOM_A[n:0..N] = (when(n!=N) allow_A    -> arrive_A[n+1]    -> ROOM_A[n+1] |when(n!=N) deny_Out -> arrive_A[n+1] -> ROOM_A[n+1]   |when(n!=0) reqOut -> ROOM_A[n-1]).
+
+
+DOOR_LOCK_HALL = LOCK_HALL,
+LOCK_HALL = (lock_Hall -> unLock_Hall -> LOCK_HALL).
+
+DOOR_LOCK_A = LOCK_A,
+LOCK_A = (lock_A -> unLock_A -> LOCK_A).
+
+
+||Environment= (VISITOR||HALL||ROOM_A||DOOR_LOCK_HALL||DOOR_LOCK_A).
+
+
+,
+"Demonstration Requirement model":
+
+Process:
+	P_VISITOR_RULE_HALL
+States:
+	2
+Transitions:
+	P_VISITOR_RULE_HALL = Q0,
+	Q0	= ({allow_Hall, unLock_Hall} -> Q0
+		  |lock_Hall -> Q1),
+	Q1	= (allow_Hall -> ERROR
+		  |unLock_Hall -> Q0
+		  |lock_Hall -> Q1)
+
+Process:
+	P_LOCK_RULE_HALL1
+States:
+	3
+Transitions:
+	P_LOCK_RULE_HALL1 = Q0,
+	Q0	= ({resRoomStatus, unLock_Hall} -> Q0
+		  |lock_Hall -> Q1
+		  |arrive_Hall[2] -> Q2),
+	Q1	= (unLock_Hall -> Q0
+		  |{arrive_Hall[2], {lock_Hall, resRoomStatus}} -> Q1),
+	Q2	= (resRoomStatus -> ERROR
+		  |lock_Hall -> Q1
+		  |{arrive_Hall[2], unLock_Hall} -> Q2)
+		  
+Process:
+	P_LOCK_RULE_HALL2
+States:
+	4
+Transitions:
+	P_LOCK_RULE_HALL2 = Q0,
+	Q0	= ({allow_A, unLock_Hall} -> Q0
+		  |arrive_Hall[2] -> Q1
+		  |lock_Hall -> Q2),
+	Q1	= (allow_A -> Q0
+		  |{arrive_Hall[2], unLock_Hall} -> Q1
+		  |lock_Hall -> Q3),
+	Q2	= (allow_A -> Q0
+		  |{lock_Hall, unLock_Hall} -> Q2
+		  |arrive_Hall[2] -> Q3),
+	Q3	= (unLock_Hall -> ERROR
+		  |allow_A -> Q0
+		  |{arrive_Hall[2], lock_Hall} -> Q3)
+		  
+Process:
+	P_UNLOCK_RULE_HALL1
+States:
+	3
+Transitions:
+	P_UNLOCK_RULE_HALL1 = Q0,
+	Q0	= ({allow_A, resRoomStatus, unLock_Hall} -> Q0
+		  |lock_Hall -> Q1),
+	Q1	= (unLock_Hall -> Q0
+		  |{lock_Hall, resRoomStatus} -> Q1
+		  |allow_A -> Q2),
+	Q2	= (resRoomStatus -> ERROR
+		  |unLock_Hall -> Q0
+		  |{allow_A, lock_Hall} -> Q2)
+		  
+Process:
+	P_HALL_LOCK_TIMING
+States:
+	2
+Transitions:
+	P_HALL_LOCK_TIMING = Q0,
+	Q0	= (lock_Hall -> ERROR
+		  |resRoomStatus -> Q0
+		  |arrive_Hall[2] -> Q1),
+	Q1	= (resRoomStatus -> Q0
+		  |{arrive_Hall[2], lock_Hall} -> Q1)
+		  
+Process:
+	P_HALL_UNLOCK_TIMING
+States:
+	2
+Transitions:
+	P_HALL_UNLOCK_TIMING = Q0,
+	Q0	= (unLock_Hall -> ERROR
+		  |resRoomStatus -> Q0
+		  |{{arrive_A, arrive_Hall}[1..4], {leave, notEnter}} -> Q1),
+	Q1	= (resRoomStatus -> Q0
+		  |{{arrive_A, arrive_Hall}[1..4], {leave, notEnter, unLock_Hall}} -> Q1)
+		  
+Process:
+	P_VISITOR_RULE_A
+States:
+	2
+Transitions:
+	P_VISITOR_RULE_A = Q0,
+	Q0	= ({allow_A, unLock_A} -> Q0
+		  |lock_A -> Q1),
+	Q1	= (allow_A -> ERROR
+		  |unLock_A -> Q0
+		  |lock_A -> Q1)
+		  
+Process:
+	P_LOCK_RULE_A1
+States:
+	3
+Transitions:
+	P_LOCK_RULE_A1 = Q0,
+	Q0	= ({resRoomStatus, unLock_A} -> Q0
+		  |lock_A -> Q1
+		  |arrive_A[3] -> Q2),
+	Q1	= (unLock_A -> Q0
+		  |{arrive_A[3], {lock_A, resRoomStatus}} -> Q1),
+	Q2	= (resRoomStatus -> ERROR
+		  |lock_A -> Q1
+		  |{arrive_A[3], unLock_A} -> Q2)
+		  
+Process:
+	P_LOCK_RULE_A2
+States:
+	4
+Transitions:
+	P_LOCK_RULE_A2 = Q0,
+	Q0	= ({allow_Out, unLock_A} -> Q0
+		  |arrive_A[3] -> Q1
+		  |lock_A -> Q2),
+	Q1	= (allow_Out -> Q0
+		  |{arrive_A[3], unLock_A} -> Q1
+		  |lock_A -> Q3),
+	Q2	= (allow_Out -> Q0
+		  |{lock_A, unLock_A} -> Q2
+		  |arrive_A[3] -> Q3),
+	Q3	= (unLock_A -> ERROR
+		  |allow_Out -> Q0
+		  |{arrive_A[3], lock_A} -> Q3)
+		  
+Process:
+	P_UNLOCK_RULE_A1
+States:
+	3
+Transitions:
+	P_UNLOCK_RULE_A1 = Q0,
+	Q0	= ({allow_Out, resRoomStatus, unLock_A} -> Q0
+		  |lock_A -> Q1),
+	Q1	= (unLock_A -> Q0
+		  |{lock_A, resRoomStatus} -> Q1
+		  |allow_Out -> Q2),
+	Q2	= (resRoomStatus -> ERROR
+		  |unLock_A -> Q0
+		  |{allow_Out, lock_A} -> Q2)
+		  
+Process:
+	P_A_LOCK_TIMING
+States:
+	2
+Transitions:
+	P_A_LOCK_TIMING = Q0,
+	Q0	= (lock_A -> ERROR
+		  |resRoomStatus -> Q0
+		  |arrive_A[3] -> Q1),
+	Q1	= (resRoomStatus -> Q0
+		  |{arrive_A[3], lock_A} -> Q1)
+		  
+Process:
+	P_A_UNLOCK_TIMING
+States:
+	2
+Transitions:
+	P_A_UNLOCK_TIMING = Q0,
+	Q0	= (unLock_A -> ERROR
+		  |resRoomStatus -> Q0
+		  |{{arrive_A, arrive_Hall}[1..4], {leave, notEnter}} -> Q1),
+	Q1	= (resRoomStatus -> Q0
+		  |{{arrive_A, arrive_Hall}[1..4], {leave, notEnter, unLock_A}} -> Q1)
+
+,
+
+"1st STEP": "Consider the implications of each requirement model.",
+"1st ANSWER": "P_VISITOR_RULE_HALL, P_LOCK_RULE_HALL1, P_LOCK_RULE_HALL2, P_UNLOCK_RULE_HALL1, P_HALL_LOCK_TIMING, P_HALL_UNLOCK_TIMING are associated with room 'HALL'  and P_VISITOR_RULE_A, P_LOCK_RULE_A1, P_LOCK_RULE_A2, P_UNLOCK_RULE_A1, P_A_LOCK_TIMING, P_A_UNLOCK_TIMING are requirement related to room 'A'. P_VISITOR_RULE is a requirement for a visitor to a room; P_LOCK_RULE and P_X_LOCK_TIMING are requirement to lock a room to prevent a visitor from entering; P_UNLOCK_RULE and P_X_UNLOCK_TIMING are requirement to unlock a room to allow a visitor to enter. P_UNLOCK_RULE and P_X_UNLOCK_TIMING are requirement to unlock a room and allow visitors to enter.",
+					
+"2nd STEP": "Consider the extent to which each requirement model 'semantic impact range' the environmental model.",
+"2nd ANSWER": "The environmental model allows up to four people in each room, but the requirements limit room 'HALL' to two people and room 'A' to three people. Room 'HALL' forbids arrive.HALL[3] and arrive.HALL[4], but only forbids arrive.A[4] in room 'A'. This means that room 'HALL' is more restrictive, so the reduction will be larger and semantic impact range will be greater.",
+
+"conclusion": "Although this criterion is not a high priority, the requirements related to 'HALL' should be analyzed before those related to 'A'."
+}

@@ -1,0 +1,47 @@
+Process:
+	P_DO_NOT_UP
+States:
+	1
+Transitions:
+	P_DO_NOT_UP = Q0,
+	Q0	= (up[18] -> ERROR)
+
+Process:
+	P_DO_NOT_MOVE_X
+States:
+	1
+Transitions:
+	P_DO_NOT_MOVE_X = Q0,
+	Q0	= (move[5][1..10] -> ERROR)
+
+Process:
+	P_DO_NOT_MOVE_Y
+States:
+	1
+Transitions:
+	P_DO_NOT_MOVE_Y = Q0,
+	Q0	= (move[1..10][5] -> ERROR)
+
+Process:
+	P_LOW_BATTERY
+States:
+	2
+Transitions:
+	P_LOW_BATTERY = Q0,
+	Q0	= ({battery.safe, up[3..20]} -> Q0
+		  |battery.low -> Q1),
+	Q1	= (up[3..20] -> ERROR
+		  |battery.safe -> Q0
+		  |battery.low -> Q1)
+
+Process:
+	P_LOW_BATTERY_SUB
+States:
+	2
+Transitions:
+	P_LOW_BATTERY_SUB = Q0,
+	Q0	= ({battery.safe, up[15..20]} -> Q0
+		  |battery.low -> Q1),
+	Q1	= (up[15..20] -> ERROR
+		  |battery.safe -> Q0
+		  |battery.low -> Q1)
